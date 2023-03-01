@@ -3,7 +3,7 @@ import {*} with "./graphs.jac";
 import {*} with "./globals.jac";
 
 import {*} with './utils/model/kit/tfm_ner.jac';
-import {*} with "utils/model/kit/sbert.jac";
+import {*} with "./utils/model/kit/sbert.jac";
 
 
 walker init {
