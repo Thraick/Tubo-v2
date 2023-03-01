@@ -1,0 +1,15 @@
+{
+  "anger": [
+    "I'm sorry to hear that.",
+    "That must be frustrating.",
+    "That's not fair."
+  ],
+  "happy": ["Awesome!", "That's wonderful!", "How nice.."],
+  "fear": ["That's scary!", "That's terrifying!"],
+  "surprised": ["Wow!", "No way!", "I can't believe it!"],
+  "sad": [
+    "I'm sorry for your loss.",
+    "That's heartbreaking.",
+    "Sending hugs your way."
+  ]
+}

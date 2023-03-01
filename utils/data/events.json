@@ -1,0 +1,14 @@
+
+
+{
+    "birthday":     ["subject", "age", "event", "people", "date", "location", "emotion"],
+    "vacation":     ["weather", "event", "people", "date", "location", "emotion"],
+    "anniversary":  ["number", "event", "people", "date", "location", "emotion"],
+    "funeral":      ["weather", "event", "people", "date", "location", "emotion"],
+    "sport":        ["event", "people", "date", "location", "emotion"],
+    "running":      ["weather", "activity", "people", "date", "location", "emotion"],
+    "swimming":     ["weather", "activity", "people", "date", "location", "emotion"],
+    "walking":      ["weather", "activity", "people", "date", "location", "emotion"]
+}
+
+
