@@ -14,8 +14,12 @@ sentinel register -set_active true -mode ir main.jir
 
 walker run init
 
+run test against this 
+walker run talk -ctx "{\"extracted_entities\": {\"sentiment\": [\"excited\"], \"event\": [\"bernaman concert\"], \"emotion\": [\"amazing\"], \"people\":[\"cindy\",\"shawn\",\"tim\"], \"activity\": [\"drinking\"]}}"
 
-walker run talk -ctx "{\"extracted_entities\": {\"sentiment\": [\"happy\"], \"event\": [\"birthday\"], \"emotion\": [\"amazing\"]}}"
+
+
+
 walker run talk -ctx "{\"extracted_entities\": {\"sentiment\": [\"Lighthearted\"], \"date\": [\"yesterday\"], \"event\": [\"birthday\"], \"emotion\": [\"amazing\"]}}"
 walker run talk -ctx "{\"extracted_entities\": {\"sentiment\": [\"glad\"], \"age\": [\"22 years old\"]}}"
 walker run talk -ctx "{\"extracted_entities\": {\"sentiment\": [\"pleased\"], \"location\": [\"Georgetown\"]}}"
@@ -108,4 +112,10 @@ walker run talk -ctx "{\"utterance\": \"it was amazing\"}"
 walker run talk -ctx "{\"utterance\": \"Anna is 22 years old\"}"
 walker run talk -ctx "{\"utterance\": \"it was just my friends\"}"
 walker run talk -ctx "{\"utterance\": \"it was mostly sunny there\"}"
+
+walker run talk -ctx "{\"utterance\": \"I went walking in the park in france.\"}"
+walker run talk -ctx "{\"utterance\": \"yesterday was Anna's birthday. it was amazing\"}"
+walker run talk -ctx "{\"utterance\": \"it was just my friends\"}"
+
+
 

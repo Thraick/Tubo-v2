@@ -40,6 +40,8 @@ node dialogue_state{
                         max_score = best_answer['scores'][nn];
                         intent = imprint[0].name;
                     }
+                    std.out("best_answer intent");
+                    std.out(best_answer);
                 }
             }
             
@@ -364,6 +366,8 @@ node capture_memories:dialogue_state{
                 text = visitor.extracted_entities['event'][0],
                 classes = visitor.events_json.dict::keys
             );
+            std.out("best_answer event");
+            std.out(best_answer);
             entity_name = best_answer.match;
             idx = best_answer.match_idx;
             if (best_answer['scores'][idx] > global.event_type_score){
@@ -381,6 +385,9 @@ node capture_memories:dialogue_state{
                 text = visitor.extracted_entities['activity'][0],
                 classes = visitor.events_json.dict::keys
             );
+            std.out("best_answer activity");
+            std.out(best_answer);
+
             entity_name = best_answer.match;
             idx = best_answer.match_idx;
             if (best_answer['scores'][idx] > global.event_type_score){
@@ -392,6 +399,10 @@ node capture_memories:dialogue_state{
                 std.log("NO EVENT OR ACTIVITY FOUND. SOCRE: "+ global.event_type_score.str);
             }
         }
+
+        std.out("visitor.events_json  lllllllllllllll");
+        std.out(visitor.events_json);
+        
 
         if(!visitor.current_event_type){
             visitor.main_queue = visitor.default_queue;
@@ -407,6 +418,8 @@ node capture_memories:dialogue_state{
                 text = ext_entity_name,
                 classes = visitor.commentary_json.dict::keys
             );
+            std.out("best_commentary");
+            std.out(best_commentary);
             commentary_name = best_commentary.match;
             idx = best_commentary.match_idx;
             if (best_commentary['scores'][idx] > global.commentary_score){
@@ -422,6 +435,10 @@ node capture_memories:dialogue_state{
                 text = ext_entity_name,
                 classes = visitor.events_json.dict::keys
             );
+            std.out("ev_best_commentary");
+            std.out(ev_best_commentary);
+
+            
             ev_commentary_name = ev_best_commentary.match;
             idx = best_commentary.match_idx;
             if (best_commentary['scores'][idx] > global.event_type_score){
@@ -438,6 +455,9 @@ node capture_memories:dialogue_state{
                 text = ext_entity_name,
                 classes = visitor.commentary_json.dict::keys
             );
+            std.out("best_commentary");
+            std.out(best_commentary);
+
             commentary_name = best_commentary.match;
             idx = best_commentary.match_idx;
             if (best_commentary['scores'][idx] > global.commentary_score){
@@ -453,6 +473,9 @@ node capture_memories:dialogue_state{
                 text = ext_entity_name,
                 classes = visitor.events_json.dict::keys
             );
+            std.out("ev_best_commentary");
+            std.out(ev_best_commentary);
+
             ev_commentary_name = ev_best_commentary.match;
             idx = best_commentary.match_idx;
             if (best_commentary['scores'][idx] > global.event_type_score){
@@ -462,6 +485,9 @@ node capture_memories:dialogue_state{
                 std.log("NO EVENT TYPE COMMENTARY FOUND. SOCRE: "+ global.event_type_score.str);
             }
         }
+
+        std.out("visitor.events_json  lllllllllllllll  1");
+        std.out(visitor.events_json);
         // sentiment
         if("sentiment" in visitor.extracted_entities){
             ext_sentiment_name = visitor.extracted_entities["sentiment"][0];
@@ -469,6 +495,9 @@ node capture_memories:dialogue_state{
                 text = ext_sentiment_name,
                 classes = visitor.sentiments_json.dict::keys
             );
+            std.out("sentiment");
+            std.out(sentiment);
+
             sentiment_name = best_sentiment.match;
             idx = best_sentiment.match_idx;
             if (best_sentiment['scores'][idx] > global.sentiment_score){
@@ -485,6 +514,8 @@ node capture_memories:dialogue_state{
         if(!visitor.current_event_type){
             visitor.main_queue = visitor.default_queue;
         }
+        std.out("visitor.events_json  lllllllllllllll  1.2");
+        std.out(visitor.events_json);
     }
 
     can add_events_and_activities{
@@ -515,20 +546,46 @@ node capture_memories:dialogue_state{
         }
     }
 
+    // this is the code i used. 
+
+    // events_json = file.load_json(global.events_path);
+
+    // current_event_type[name]=events_json[name];
+
+    // data[event_type]= current_event_type[event_type];
+    // main_queue.list::append(data);
+
+    // for item_m in main_queue{
+    // item_m[name_m].list::remove(removed_entity);
+
+    // how the data was passed to main_queue
+    // events_json > current_event_type > main_queue
+
+    // when i remove item from main_queue. It is also removed from events_json
+    // is there another was to pass it without the item from events_json being removed.
+
+
+
     can update_answered_queue{
+        std.out("visitor.events_json  lllllllllllllll  1.3");
+        std.out(visitor.events_json);
 
-        for item in visitor.main_queue{
-            if(item.type == dict){
-                main_event_name = item.dict::keys[0];
+        for item_m in visitor.main_queue{
+            if(item_m.type == dict){
+                main_event_name = item_m.dict::keys[0];
 
-                if(visitor.removed_entity in item[main_event_name] and visitor.removed_entity not in visitor.dialogue_context){
-                    item[main_event_name].list::remove(visitor.removed_entity);
+                if(visitor.removed_entity in item_m[main_event_name] and visitor.removed_entity not in visitor.dialogue_context){
+                    std.out("visitor.events_json before \n");
+                    std.out(visitor.events_json);
+                    item_m[main_event_name].list::remove(visitor.removed_entity);
                     if(visitor.removed_entity not in visitor.unanswered_queue): visitor.unanswered_queue.list::append(visitor.removed_entity);
+                    std.out("visitor.events_json after \n");
+                    std.out(visitor.events_json);
 
                 }
 
-                if(item[main_event_name]){
-                    for ent in item[main_event_name]{
+                if(item_m[main_event_name]){
+                    for ent in item_m[main_event_name]{
                         if(ent in visitor.answered_queue){
                             visitor.answered_queue[main_event_name][ent]=visitor.answered_queue[ent];
                             visitor.answered_queue.dict::pop(ent);
@@ -540,8 +597,8 @@ node capture_memories:dialogue_state{
                 }
 
                 for ent in visitor.answered_queue[main_event_name]{
-                    if(ent in item[main_event_name]){
-                        item[main_event_name].list::remove(ent);
+                    if(ent in item_m[main_event_name]){
+                        item_m[main_event_name].list::remove(ent);
                     }
                 }
 
@@ -559,6 +616,8 @@ node capture_memories:dialogue_state{
                 }
             }
         }
+        std.out("visitor.events_json  lllllllllllllll  1.3.1");
+        std.out(visitor.events_json);
 
 
         if (!visitor.extracted_entities){
@@ -576,6 +635,8 @@ node capture_memories:dialogue_state{
                 }
             }
         }
+        std.out("visitor.events_json  lllllllllllllll  1.4");
+        std.out(visitor.events_json);
 
         for event in visitor.answered_queue{
             if(event in visitor.events_json.dict::keys){
@@ -593,6 +654,8 @@ node capture_memories:dialogue_state{
                 }
             }
         }
+        std.out("visitor.events_json  lllllllllllllll  2");
+        std.out(visitor.events_json);
     }
 
     can create_commentary_and_sentimemt{
@@ -600,6 +663,8 @@ node capture_memories:dialogue_state{
             text = visitor.utterance,
             classes = visitor.commentary_json.dict::keys
         );
+        std.out("best_commentary");
+        std.out(best_commentary);
         commentary_name = best_commentary.match;
         idx = best_commentary.match_idx;
         if (best_commentary['scores'][idx] > global.commentary_score){
@@ -614,6 +679,9 @@ node capture_memories:dialogue_state{
             text = visitor.utterance,
             classes = visitor.sentiments_json.dict::keys
         );
+        std.out("best_sentiment");
+        std.out(best_sentiment);
+
         sentiment_name = best_sentiment.match;
         idx = best_sentiment.match_idx;
         if (best_sentiment['scores'][idx] > global.sentiment_score){
@@ -925,6 +993,9 @@ node unanswered_queue:dialogue_state{
                 text = visitor.extracted_entities['event'][0],
                 classes = visitor.events_json.dict::keys
             );
+            std.out("best_answer");
+            std.out(best_answer);
+
             entity_name = best_answer.match;
             idx = best_answer.match_idx;
             if (best_answer['scores'][idx] > global.event_type_score){
@@ -942,6 +1013,9 @@ node unanswered_queue:dialogue_state{
                 text = visitor.extracted_entities['activity'][0],
                 classes = visitor.events_json.dict::keys
             );
+            std.out("best_answer");
+            std.out(best_answer);
+
             entity_name = best_answer.match;
             idx = best_answer.match_idx;
             if (best_answer['scores'][idx] > global.event_type_score){
@@ -952,7 +1026,9 @@ node unanswered_queue:dialogue_state{
             else{
                 std.log("NO EVENT OR ACTIVITY FOUND. SOCRE: "+ global.event_type_score.str);
             }
-        }        
+        }    
+        std.out("visitor.events_json  lllllllllllllll  3");
+        std.out(visitor.events_json);    
     }
 
     can no_utterance{
@@ -962,6 +1038,9 @@ node unanswered_queue:dialogue_state{
                 text = ext_entity_name,
                 classes = visitor.events_json.dict::keys
             );
+            std.out("ev_best_commentary");
+            std.out(ev_best_commentary);
+
             ev_commentary_name = ev_best_commentary.match;
             idx = best_commentary.match_idx;
             if (best_commentary['scores'][idx] > global.event_type_score){
@@ -977,6 +1056,8 @@ node unanswered_queue:dialogue_state{
                 text = ext_entity_name,
                 classes = visitor.events_json.dict::keys
             );
+            std.out("ev_best_commentary");
+            std.out(ev_best_commentary);
             ev_commentary_name = ev_best_commentary.match;
             idx = best_commentary.match_idx;
             if (best_commentary['scores'][idx] > global.event_type_score){
@@ -986,6 +1067,9 @@ node unanswered_queue:dialogue_state{
                 std.log("NO EVENT TYPE COMMENTARY FOUND. SOCRE: "+ global.event_type_score.str);
             }
         }
+
+        std.out("visitor.events_json  lllllllllllllll    4");
+        std.out(visitor.events_json);
     }
 
     can add_events_and_activities{
